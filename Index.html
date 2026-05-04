@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IMAGIN·AI — Free AI Image Generator</title>
+<meta name="description" content="Generate gambar AI gratis, tanpa login, tanpa API key. UGC, Realistic, Anime, dan banyak lagi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080808;
+    --surface: #111111;
+    --border: #1f1f1f;
+    --border2: #2a2a2a;
+    --text: #e8e4dc;
+    --muted: #555;
+    --dim: #333;
+    --accent: #ff6b35;
+    --accent2: #ffd23f;
+    --green: #4ade80;
+    --red: #f87171;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Noise texture overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
+
+  .app { position: relative; z-index: 1; max-width: 480px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
+
+  /* HEADER */
+  .header { margin-bottom: 1.5rem; }
+  .logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 3.2rem;
+    letter-spacing: 0.04em;
+    line-height: 1;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+  }
+  .logo-badge {
+    display: inline-block;
+    background: var(--accent2);
+    color: #000;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    padding: 2px 8px;
+    border-radius: 4px;
+    vertical-align: middle;
+    margin-left: 6px;
+    margin-bottom: 8px;
+  }
+  .tagline { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.15em; margin-top: 4px; }
+
+  /* TABS */
+  .tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border: 1px solid var(--border2);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 1.2rem;
+  }
+  .tab {
+    padding: 10px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 16px;
+    letter-spacing: 0.08em;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab.active { background: var(--accent); color: #000; }
+
+  /* CARD */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+  }
+  .card-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .card-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* INPUTS */
+  textarea, input[type="text"] {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 13px;
+    padding: 10px 12px;
+    outline: none;
+    resize: none;
+    transition: border-color 0.15s;
+    line-height: 1.5;
+  }
+  textarea:focus, input[type="text"]:focus { border-color: var(--accent); }
+  textarea::placeholder, input::placeholder { color: var(--dim); }
+
+  /* STYLE PILLS */
+  .pills { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .pill {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .pill:hover { border-color: var(--accent); color: var(--text); }
+  .pill.active { background: var(--accent); color: #000; border-color: var(--accent); font-weight: 500; }
+
+  /* SELECT ROW */
+  .select-row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-top: 8px; }
+  .select-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; white-space: nowrap; }
+  select {
+    background: var(--bg);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    color: #aaa;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 5px 8px;
+    outline: none;
+    cursor: pointer;
+    flex: 1;
+  }
+
+  /* SLIDER */
+  .slider-wrap { margin-top: 10px; }
+  .slider-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+  .slider-header span:first-child { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .slider-header span:last-child { font-size: 12px; color: var(--accent); font-weight: 500; }
+  input[type="range"] { width: 100%; accent-color: var(--accent); height: 4px; }
+  .slider-hints { display: flex; justify-content: space-between; margin-top: 3px; }
+  .slider-hints span { font-size: 10px; color: var(--dim); }
+
+  /* UPLOAD ZONE */
+  .upload-zone {
+    border: 1.5px dashed var(--border2);
+    border-radius: 10px;
+    padding: 1.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s;
+  }
+  .upload-zone:hover, .upload-zone.drag { border-color: var(--accent); background: rgba(255,107,53,0.04); }
+  .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+  .upload-icon { font-size: 2rem; margin-bottom: 8px; opacity: 0.35; }
+  .upload-zone p { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.1em; }
+  .upload-zone small { font-size: 10px; color: var(--dim); display: block; margin-top: 4px; }
+
+  .preview-wrap { position: relative; }
+  .preview-wrap img { width: 100%; max-height: 220px; object-fit: contain; border-radius: 8px; border: 1px solid var(--border); display: block; }
+  .clear-btn {
+    position: absolute;
+    top: 8px; right: 8px;
+    background: rgba(8,8,8,0.85);
+    border: 1px solid var(--border2);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    transition: all 0.15s;
+  }
+  .clear-btn:hover { color: var(--accent); border-color: var(--accent); }
+
+  /* GENERATE BUTTON */
+  .gen-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: 10px;
+    padding: 14px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px;
+    letter-spacing: 0.12em;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-bottom: 1rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .gen-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.1) 100%);
+  }
+  .gen-btn:hover { background: #ff8050; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(255,107,53,0.3); }
+  .gen-btn:active { transform: translateY(0); }
+  .gen-btn:disabled { background: var(--border2); color: var(--muted); cursor: not-allowed; transform: none; box-shadow: none; }
+
+  /* OUTPUT */
+  .output-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .output-ph { text-align: center; padding: 2rem; color: var(--border2); }
+  .output-ph .ph-icon { font-size: 3rem; margin-bottom: 12px; opacity: 0.4; }
+  .output-ph p { font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; }
+  .output-img { width: 100%; display: block; }
+
+  /* LOADING */
+  .loading-wrap { padding: 2.5rem 1rem; text-align: center; width: 100%; }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 2px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-wrap p { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.12em; }
+  .loading-wrap small { font-size: 10px; color: var(--dim); display: block; margin-top: 6px; }
+
+  /* META BAR */
+  .meta-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
+  .meta-info { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.08em; }
+  .dl-btn {
+    font-size: 11px;
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace;
+    transition: all 0.15s;
+    text-decoration: none;
+    display: inline-block;
+  }
+  .dl-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* ERROR */
+  .error-wrap { padding: 1.5rem; text-align: center; }
+  .error-wrap p { font-size: 12px; color: var(--red); line-height: 1.7; }
+  .error-wrap small { font-size: 10px; color: var(--dim); display: block; margin-top: 8px; }
+
+  /* HISTORY */
+  .history-section { margin-top: 0.5rem; }
+  .h-label { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 8px; }
+  .h-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .h-item {
+    aspect-ratio: 1;
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    border: 1px solid var(--border);
+    transition: border-color 0.15s;
+    background: var(--surface);
+  }
+  .h-item:hover { border-color: var(--accent); }
+  .h-item img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+  /* FOOTER */
+  .footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .footer p { font-size: 10px; color: var(--dim); text-transform: uppercase; letter-spacing: 0.1em; line-height: 2; }
+  .footer a { color: var(--accent); text-decoration: none; }
+
+  /* SECTION hide/show */
+  .tab-section { display: none; }
+  .tab-section.active { display: block; }
+
+  /* Animate in */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .output-card, .card { animation: fadeUp 0.3s ease both; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <span class="logo">IMAGIN·AI</span>
+      <span class="logo-badge">FREE</span>
+    </div>
+    <div class="tagline">Generate gambar AI · Gratis · Tanpa login</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('txt')">✦ Text → Gambar</button>
+    <button class="tab" onclick="switchTab('img')">⟳ Transform Foto</button>
+  </div>
+
+  <!-- TAB: TEXT TO IMAGE -->
+  <div class="tab-section active" id="tab-txt">
+
+    <div class="card">
+      <div class="card-label">Prompt</div>
+      <textarea id="t-prompt" rows="3" placeholder="Deskripsiin gambar lo... cth: 'model UGC aesthetic holding coffee, natural light, cafe background'"></textarea>
+      <div class="card-label" style="margin-top:10px">Negative Prompt</div>
+      <textarea id="t-neg" rows="2" placeholder="Yang ga mau muncul... cth: blurry, watermark, bad quality"></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Style</div>
+      <div class="pills" id="style-pills">
+        <button class="pill active" data-s="">Default</button>
+        <button class="pill" data-s="UGC lifestyle content creator, candid, natural light, authentic">UGC</button>
+        <button class="pill" data-s="photorealistic, 8k, hyperdetailed, professional photography">Realistic</button>
+        <button class="pill" data-s="cinematic film photography, moody lighting, bokeh, editorial">Cinematic</button>
+        <button class="pill" data-s="professional product photography, clean white background, commercial">Product</button>
+        <button class="pill" data-s="anime illustration, studio ghibli style, vibrant colors">Anime</button>
+        <button class="pill" data-s="3D CGI render, octane, studio lighting, hyperreal">3D</button>
+        <button class="pill" data-s="vintage film, grain, warm tones, 35mm analog">Vintage</button>
+        <button class="pill" data-s="watercolor illustration, soft brushstrokes, pastel">Watercolor</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Settings</div>
+      <div class="select-row">
+        <span class="select-lbl">Ukuran</span>
+        <select id="t-size">
+          <option value="1024x1024">1:1 Square</option>
+          <option value="720x1280">9:16 TikTok/Reels</option>
+          <option value="1280x720">16:9 YouTube</option>
+          <option value="1080x1080">Instagram Post</option>
+          <option value="1200x628">Facebook Cover</option>
+        </select>
+      </div>
+      <div class="select-row" style="margin-top:8px">
+        <span class="select-lbl">Model AI</span>
+        <select id="t-model">
+          <option value="flux">Flux (Terbaik)</option>
+          <option value="flux-realism">Flux Realism</option>
+          <option value="flux-anime">Flux Anime</option>
+          <option value="flux-3d">Flux 3D</option>
+          <option value="turbo">Turbo (Cepat)</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TAB: IMG2IMG -->
+  <div class="tab-section" id="tab-img">
+
+    <div class="card">
+      <div class="card-label">Upload Foto</div>
+      <div id="upload-area">
+        <div class="upload-zone" id="dz">
+          <input type="file" accept="image/*" id="img-file" onchange="handleFile(event)">
+          <div class="upload-icon">📸</div>
+          <p>Tap untuk upload foto</p>
+          <small>JPG, PNG, WEBP</small>
+        </div>
+      </div>
+      <div id="preview-area" style="display:none">
+        <div class="preview-wrap">
+          <img id="preview-img" src="" alt="preview">
+          <button class="clear-btn" onclick="clearFile()">✕ Ganti</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Transform Jadi</div>
+      <div class="pills" style="margin-bottom:10px">
+        <button class="pill" onclick="setQP('UGC lifestyle content creator, natural light, candid, aesthetic')">UGC Lifestyle</button>
+        <button class="pill" onclick="setQP('professional product photography, clean background, commercial')">Product Shot</button>
+        <button class="pill" onclick="setQP('cinematic editorial fashion photography, moody, professional')">Editorial</button>
+        <button class="pill" onclick="setQP('anime illustration style, vibrant, detailed, studio ghibli')">Anime</button>
+        <button class="pill" onclick="setQP('3D CGI stylized render, studio lighting, hyperreal')">3D CGI</button>
+        <button class="pill" onclick="setQP('vintage 35mm film photography, grain, warm analog tones')">Film Vintage</button>
+      </div>
+      <textarea id="i-prompt" rows="2" placeholder="Atau tulis sendiri transform yang lo mau..."></textarea>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Transform Strength</div>
+      <div class="slider-wrap">
+        <div class="slider-header">
+          <span>Seberapa beda dari foto asli</span>
+          <span id="str-val">0.6</span>
+        </div>
+        <input type="range" min="0.1" max="1" step="0.05" value="0.6" id="strength" oninput="document.getElementById('str-val').textContent=parseFloat(this.value).toFixed(1)">
+        <div class="slider-hints">
+          <span>Mirip asli</span>
+          <span>Beda total</span>
+        </div>
+      </div>
+      <div class="select-row" style="margin-top:12px">
+        <span class="select-lbl">Model AI</span>
+        <select id="i-model">
+          <option value="flux">Flux (Terbaik)</option>
+          <option value="flux-realism">Flux Realism</option>
+          <option value="turbo">Turbo (Cepat)</option>
+        </select>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- GENERATE BUTTON -->
+  <button class="gen-btn" id="gen-btn" onclick="generate()">⚡ GENERATE SEKARANG</button>
+
+  <!-- OUTPUT -->
+  <div class="output-card" id="output">
+    <div class="output-ph">
+      <div class="ph-icon">🎨</div>
+      <p>Gambar lo muncul di sini</p>
+    </div>
+  </div>
+
+  <!-- META -->
+  <div class="meta-bar" id="meta-bar" style="display:none">
+    <span class="meta-info" id="meta-info"></span>
+    <a class="dl-btn" id="dl-btn" href="#" download="imagin-ai.png" target="_blank">↓ Download</a>
+  </div>
+
+  <!-- HISTORY -->
+  <div class="history-section" id="history-section" style="display:none">
+    <div class="h-label">Riwayat Generate</div>
+    <div class="h-grid" id="h-grid"></div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <p>IMAGIN·AI · Gratis selamanya<br>
+    Powered by <a href="https://pollinations.ai" target="_blank">Pollinations.AI</a><br>
+    © 2025 · Dibuat dengan 🔥</p>
+  </div>
+
+</div>
+
+<script>
+  // State
+  let activeTab = 'txt';
+  let selectedStyle = '';
+  let uploadedB64 = '';
+  let currentImgUrl = '';
+  let genHistory = [];
+
+  // Tab switch
+  function switchTab(t) {
+    activeTab = t;
+    document.querySelectorAll('.tab').forEach((b, i) => b.classList.toggle('active', (i === 0 && t === 'txt') || (i === 1 && t === 'img')));
+    document.getElementById('tab-txt').classList.toggle('active', t === 'txt');
+    document.getElementById('tab-img').classList.toggle('active', t === 'img');
+  }
+
+  // Style pills
+  document.querySelectorAll('#style-pills .pill').forEach(pill => {
+    pill.addEventListener('click', () => {
+      document.querySelectorAll('#style-pills .pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      selectedStyle = pill.dataset.s;
+    });
+  });
+
+  // Quick prompt
+  function setQP(p) {
+    document.getElementById('i-prompt').value = p;
+  }
+
+  // File upload
+  function handleFile(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = ev => {
+      uploadedB64 = ev.target.result;
+      document.getElementById('preview-img').src = uploadedB64;
+      document.getElementById('upload-area').style.display = 'none';
+      document.getElementById('preview-area').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function clearFile() {
+    uploadedB64 = '';
+    document.getElementById('img-file').value = '';
+    document.getElementById('upload-area').style.display = 'block';
+    document.getElementById('preview-area').style.display = 'none';
+  }
+
+  // Drag drop
+  const dz = document.getElementById('dz');
+  if (dz) {
+    dz.addEventListener('dragover', e => { e.preventDefault(); dz.classList.add('drag'); });
+    dz.addEventListener('dragleave', () => dz.classList.remove('drag'));
+    dz.addEventListener('drop', e => {
+      e.preventDefault(); dz.classList.remove('drag');
+      const f = e.dataTransfer.files[0];
+      if (f && f.type.startsWith('image/')) {
+        const dt = new DataTransfer(); dt.items.add(f);
+        document.getElementById('img-file').files = dt.files;
+        handleFile({ target: { files: [f] } });
+      }
+    });
+  }
+
+  // Enter shortcut
+  document.getElementById('t-prompt').addEventListener('keydown', e => {
+    if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) generate();

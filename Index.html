@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EndoLabs.ai — AI Image Generator</title>
-<meta name="description" content="Generate gambar AI berkualitas tinggi. UGC, Realistic, Anime, img2img dan banyak lagi.">
+<meta name="description" content="Generate gambar AI berkualitas tinggi. Gratis, tanpa login, tanpa kartu kredit.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -19,56 +18,27 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;min-height:100vh;overflow-x:hidden}
-
 body::before{content:'';position:fixed;inset:0;
   background:radial-gradient(ellipse 100% 60% at 20% 0%,rgba(0,229,255,0.06),transparent),
-             radial-gradient(ellipse 80% 50% at 80% 100%,rgba(124,77,255,0.07),transparent),
-             radial-gradient(ellipse 60% 40% at 50% 50%,rgba(255,64,129,0.03),transparent);
+             radial-gradient(ellipse 80% 50% at 80% 100%,rgba(124,77,255,0.07),transparent);
   pointer-events:none;z-index:0}
-
 .app{position:relative;z-index:1;max-width:480px;margin:0 auto;padding:1.2rem 1rem 4rem}
 
 /* HEADER */
-.header{margin-bottom:1.5rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
+.header{margin-bottom:1.2rem;padding-bottom:1rem;border-bottom:1px solid var(--border)}
 .logo-wrap{display:flex;align-items:center;gap:10px;margin-bottom:4px}
 .logo{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;letter-spacing:-0.03em;line-height:1}
 .logo .endo{color:var(--accent)}
 .logo .labs{color:var(--text)}
 .logo .dot{color:var(--accent2)}
 .logo .ai{color:var(--accent3)}
-.version{font-size:9px;background:var(--accent2);color:#fff;padding:2px 7px;border-radius:4px;font-weight:700;letter-spacing:0.08em;align-self:flex-start;margin-top:4px}
+.badge{font-size:9px;background:var(--green);color:#000;padding:2px 7px;border-radius:4px;font-weight:700;letter-spacing:0.08em;align-self:flex-start;margin-top:4px}
 .tagline{font-size:10px;color:var(--muted);letter-spacing:0.12em;text-transform:uppercase}
-.stats-row{display:flex;gap:12px;margin-top:10px}
-.stat{font-size:10px;color:var(--muted);letter-spacing:0.05em}
-.stat span{color:var(--accent);font-weight:700}
+.free-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(105,255,71,0.08);border:1px solid rgba(105,255,71,0.2);border-radius:20px;padding:4px 12px;margin-top:8px;font-size:10px;color:var(--green);letter-spacing:0.08em}
 
-/* API BAR */
-.api-section{background:var(--s1);border:1px solid var(--border2);border-radius:12px;padding:10px 12px;margin-bottom:1rem}
-.api-top{display:flex;gap:8px;align-items:center}
-.api-dot{width:7px;height:7px;border-radius:50%;background:var(--dim);flex-shrink:0;transition:all 0.3s}
-.api-dot.ok{background:var(--green);box-shadow:0 0 8px var(--green)}
-.api-dot.err{background:var(--accent3)}
-.api-dot.loading{background:var(--gold);animation:blink 0.8s infinite}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
-.api-input{flex:1;background:transparent;border:none;outline:none;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:11px;min-width:0}
-.api-input::placeholder{color:var(--dim)}
-.api-save{font-family:'JetBrains Mono',monospace;font-size:10px;padding:5px 10px;border-radius:6px;border:1px solid var(--accent);background:transparent;color:var(--accent);cursor:pointer;white-space:nowrap;transition:all 0.15s;letter-spacing:0.05em}
-.api-save:hover{background:var(--accent);color:#000}
-.api-hint{font-size:10px;color:var(--muted);margin-top:8px;line-height:1.7;display:none}
-.api-hint.show{display:block}
-.api-hint a{color:var(--accent);text-decoration:none}
-
-/* TOKEN BAR */
-.token-bar{display:flex;gap:8px;align-items:center;margin-top:8px;display:none}
-.token-bar.show{display:flex}
-.token-label{font-size:10px;color:var(--muted)}
-.token-track{flex:1;height:4px;background:var(--border2);border-radius:2px;overflow:hidden}
-.token-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:2px;transition:width 0.5s}
-.token-count{font-size:10px;color:var(--accent)}
-
-/* NAV TABS */
+/* TABS */
 .nav{display:flex;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-bottom:1rem}
-.nav-tab{flex:1;padding:8px 4px;font-family:'Syne',sans-serif;font-size:12px;font-weight:700;letter-spacing:0.04em;border:none;background:transparent;color:var(--muted);cursor:pointer;transition:all 0.2s;text-align:center;white-space:nowrap}
+.nav-tab{flex:1;padding:8px 4px;font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:0.04em;border:none;background:transparent;color:var(--muted);cursor:pointer;transition:all 0.2s;text-align:center;white-space:nowrap}
 .nav-tab.on{background:var(--accent);color:#000}
 
 /* SECTION */
@@ -81,9 +51,9 @@ body::before{content:'';position:fixed;inset:0;
 .clabel{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .clabel::after{content:'';flex:1;height:1px;background:var(--border)}
 
-textarea,input[type=text]{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:10px 12px;outline:none;resize:none;transition:border-color 0.15s;line-height:1.5;margin-bottom:0}
-textarea:focus,input[type=text]:focus{border-color:var(--accent)}
-textarea::placeholder,input::placeholder{color:var(--dim)}
+textarea{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:12px;padding:10px 12px;outline:none;resize:none;transition:border-color 0.15s;line-height:1.5}
+textarea:focus{border-color:var(--accent)}
+textarea::placeholder{color:var(--dim)}
 
 /* PILLS */
 .pills{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
@@ -93,7 +63,7 @@ textarea::placeholder,input::placeholder{color:var(--dim)}
 .pill.q{border-color:var(--accent2);color:var(--accent2)}
 .pill.q:hover{background:var(--accent2);color:#fff}
 
-/* SELECT ROW */
+/* SELECT */
 .srow{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
 .slbl{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.12em;white-space:nowrap}
 select{background:var(--bg);border:1px solid var(--border2);border-radius:6px;color:#aaa;font-family:'JetBrains Mono',monospace;font-size:11px;padding:5px 8px;outline:none;cursor:pointer;flex:1}
@@ -119,22 +89,18 @@ input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
 .clr-btn{position:absolute;top:6px;right:6px;background:rgba(3,3,5,0.85);border:1px solid var(--border2);color:var(--muted);border-radius:5px;padding:3px 8px;font-size:10px;cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all 0.15s}
 .clr-btn:hover{color:var(--accent3);border-color:var(--accent3)}
 
-/* GENERATE BTN */
+/* GEN BTN */
 .gen-btn{width:100%;background:linear-gradient(135deg,var(--accent2),var(--accent));color:#fff;border:none;border-radius:10px;padding:14px;font-family:'Syne',sans-serif;font-size:16px;font-weight:800;letter-spacing:0.08em;cursor:pointer;transition:all 0.2s;margin-bottom:1rem;position:relative;overflow:hidden}
-.gen-btn::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent,rgba(255,255,255,0.08));pointer-events:none}
 .gen-btn:hover{transform:translateY(-2px);box-shadow:0 10px 30px rgba(124,77,255,0.3)}
 .gen-btn:active{transform:translateY(0)}
 .gen-btn:disabled{background:var(--border2);color:var(--muted);cursor:not-allowed;transform:none;box-shadow:none}
 
 /* OUTPUT */
-.output{background:var(--s1);border:1px solid var(--border);border-radius:12px;min-height:300px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:8px;position:relative}
+.output{background:var(--s1);border:1px solid var(--border);border-radius:12px;min-height:300px;display:flex;align-items:center;justify-content:center;overflow:hidden;margin-bottom:8px}
 .ph{text-align:center;padding:2rem;color:var(--dim)}
 .ph-icon{font-size:3rem;margin-bottom:10px;opacity:0.25}
 .ph p{font-size:10px;text-transform:uppercase;letter-spacing:0.15em}
-.out-img{width:100%;display:block}
-.out-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;width:100%}
-.out-grid img{width:100%;display:block;cursor:pointer}
-.out-grid img:hover{opacity:0.8}
+.out-img{width:100%;display:block;border-radius:12px}
 
 /* LOADING */
 .loading-wrap{text-align:center;padding:2.5rem;width:100%}
@@ -149,9 +115,8 @@ input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
 .meta{display:flex;justify-content:space-between;align-items:center;margin-bottom:0.8rem;flex-wrap:wrap;gap:6px}
 .meta-info{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:0.06em}
 .action-btns{display:flex;gap:6px}
-.act-btn{font-size:10px;padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all 0.15s;white-space:nowrap}
+.act-btn{font-size:10px;padding:5px 10px;border-radius:6px;border:1px solid var(--border2);background:transparent;color:var(--muted);cursor:pointer;font-family:'JetBrains Mono',monospace;transition:all 0.15s}
 .act-btn:hover{border-color:var(--accent);color:var(--accent)}
-.act-btn.fav{border-color:var(--gold);color:var(--gold)}
 
 /* ERROR */
 .err-wrap{padding:1.5rem;text-align:center;width:100%}
@@ -162,42 +127,31 @@ input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
 .hist{margin-top:0.8rem}
 .hlbl{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:0.2em;margin-bottom:8px}
 .hgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:5px}
-.hitem{aspect-ratio:1;border-radius:7px;overflow:hidden;cursor:pointer;border:1px solid var(--border);transition:all 0.15s;background:var(--s1);position:relative}
-.hitem:hover{border-color:var(--accent);transform:scale(1.02)}
+.hitem{aspect-ratio:1;border-radius:7px;overflow:hidden;cursor:pointer;border:1px solid var(--border);transition:all 0.15s;background:var(--s1)}
+.hitem:hover{border-color:var(--accent);transform:scale(1.03)}
 .hitem img{width:100%;height:100%;object-fit:cover;display:block}
-.hitem .fav-star{position:absolute;top:3px;right:3px;font-size:10px;display:none}
-.hitem.faved .fav-star{display:block}
 
-/* UPSCALE PREVIEW */
-.upscale-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
-.upscale-side{text-align:center}
-.upscale-side img{width:100%;border-radius:6px;border:1px solid var(--border)}
-.upscale-side p{font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.1em;margin-top:4px}
-
-/* GUIDE */
-.guide-card{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:1rem;margin-bottom:0.8rem}
-.guide-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--accent);margin-bottom:10px}
-.steps{display:flex;flex-direction:column;gap:8px}
-.step{display:flex;gap:10px;align-items:flex-start}
-.step-n{width:20px;height:20px;border-radius:50%;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
-.step-t{font-size:11px;color:var(--muted);line-height:1.6}
-.step-t a{color:var(--accent);text-decoration:none}
-.tip-row{display:flex;gap:6px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border)}
-.tip-row:last-child{border:none}
-.tip-icon{font-size:14px;flex-shrink:0}
-.tip-text{font-size:11px;color:var(--muted);line-height:1.6}
-
-/* PROMPT LIBRARY */
-.prompt-lib{margin-top:6px}
+/* PROMPT LIB */
 .plib-item{background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:8px 10px;margin-bottom:6px;cursor:pointer;transition:all 0.15s}
 .plib-item:hover{border-color:var(--accent2)}
 .plib-tag{font-size:9px;color:var(--accent2);text-transform:uppercase;letter-spacing:0.1em;margin-bottom:4px}
 .plib-text{font-size:11px;color:var(--muted);line-height:1.5}
 
+/* GUIDE */
+.guide-title{font-family:'Syne',sans-serif;font-size:13px;font-weight:700;color:var(--accent);margin-bottom:10px}
+.steps{display:flex;flex-direction:column;gap:8px}
+.step{display:flex;gap:10px;align-items:flex-start}
+.step-n{width:20px;height:20px;border-radius:50%;background:var(--accent2);color:#fff;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.step-t{font-size:11px;color:var(--muted);line-height:1.6}
+.tip-row{display:flex;gap:6px;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--border)}
+.tip-row:last-child{border:none}
+.tip-icon{font-size:14px;flex-shrink:0}
+.tip-text{font-size:11px;color:var(--muted);line-height:1.6}
+
 /* FOOTER */
 .footer{text-align:center;margin-top:2rem;padding-top:1.5rem;border-top:1px solid var(--border)}
-.footer p{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:0.15em;line-height:2.2}
 .footer .brand{font-family:'Syne',sans-serif;font-size:14px;font-weight:800;color:var(--accent);letter-spacing:-0.02em}
+.footer p{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:0.15em;line-height:2.2;margin-top:4px}
 </style>
 </head>
 <body>
@@ -209,40 +163,18 @@ input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
       <div class="logo">
         <span class="endo">Endo</span><span class="labs">Labs</span><span class="dot">.</span><span class="ai">ai</span>
       </div>
-      <div class="version">BETA</div>
+      <div class="badge">FREE</div>
     </div>
-    <div class="tagline">AI Image Generator · Pro Quality · Free</div>
-    <div class="stats-row">
-      <div class="stat">Model <span>4+</span></div>
-      <div class="stat">Fitur <span>8+</span></div>
-      <div class="stat">Token <span id="hdr-token">—</span>/hari</div>
-    </div>
-  </div>
-
-  <!-- API KEY -->
-  <div class="api-section">
-    <div class="api-top">
-      <div class="api-dot" id="api-dot"></div>
-      <input class="api-input" type="password" id="api-key" placeholder="Paste Leonardo API key lo di sini..." oninput="onKeyInput()">
-      <button class="api-save" onclick="saveKey()">SAVE</button>
-    </div>
-    <div class="api-hint" id="api-hint">
-      💡 Dapet API key gratis di <a href="https://app.leonardo.ai/api-access" target="_blank">app.leonardo.ai/api-access</a> → tap "Launch" → copy key. Gratis ~150 token/hari (~30-50 gambar)!
-    </div>
-    <div class="token-bar" id="token-bar">
-      <span class="token-label">Token</span>
-      <div class="token-track"><div class="token-fill" id="token-fill" style="width:0%"></div></div>
-      <span class="token-count" id="token-count">—</span>
-    </div>
+    <div class="tagline">AI Image Generator · No Login · No Credit Card</div>
+    <div class="free-badge">✓ 100% Gratis · Tanpa API Key · Unlimited</div>
   </div>
 
   <!-- NAV -->
   <div class="nav">
     <button class="nav-tab on" onclick="switchTab('txt')">TXT2IMG</button>
     <button class="nav-tab" onclick="switchTab('img')">IMG2IMG</button>
-    <button class="nav-tab" onclick="switchTab('enhance')">ENHANCE</button>
     <button class="nav-tab" onclick="switchTab('lib')">PROMPT</button>
-    <button class="nav-tab" onclick="switchTab('guide')">CARA</button>
+    <button class="nav-tab" onclick="switchTab('guide')">TIPS</button>
   </div>
 
   <!-- TAB: TXT2IMG -->
@@ -251,7 +183,7 @@ input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
       <div class="clabel">Prompt</div>
       <textarea id="t-prompt" rows="3" placeholder="UGC lifestyle content, beautiful woman, natural light, cafe, photorealistic, 8k..."></textarea>
       <div class="clabel" style="margin-top:10px">Negative Prompt</div>
-      <textarea id="t-neg" rows="2" placeholder="blurry, bad anatomy, watermark, ugly, deformed, extra fingers..."></textarea>
+      <textarea id="t-neg" rows="2" placeholder="blurry, bad anatomy, watermark, ugly, deformed..."></textarea>
     </div>
 
     <div class="card">
@@ -261,12 +193,14 @@ input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
         <button class="pill" data-s="UGC content creator, candid, natural light, lifestyle, authentic">UGC</button>
         <button class="pill" data-s="photorealistic, hyperdetailed, 8K DSLR, sharp focus">Realistic</button>
         <button class="pill" data-s="cinematic, film grain, moody, bokeh, editorial">Cinematic</button>
-        <button class="pill" data-s="product photography, white background, commercial, clean studio">Product</button>
+        <button class="pill" data-s="product photography, white background, commercial, clean">Product</button>
         <button class="pill" data-s="anime, vibrant colors, detailed, studio ghibli">Anime</button>
-        <button class="pill" data-s="3D CGI, octane render, subsurface scattering, studio light">3D CGI</button>
+        <button class="pill" data-s="3D CGI, octane render, studio lighting, hyperreal">3D CGI</button>
         <button class="pill" data-s="fashion editorial, vogue, high fashion, dramatic lighting">Fashion</button>
-        <button class="pill" data-s="oil painting, classical art, brushwork, museum quality">Oil Paint</button>
-        <button class="pill" data-s="cyberpunk, neon lights, futuristic city, rain">Cyberpunk</button>
+        <button class="pill" data-s="watercolor illustration, soft colors, artistic brushwork">Watercolor</button>
+        <button class="pill" data-s="cyberpunk, neon lights, futuristic, rain, dark city">Cyberpunk</button>
+        <button class="pill" data-s="vintage film, 35mm grain, warm tones, analog">Vintage</button>
+        <button class="pill" data-s="oil painting, classical art, museum quality, detailed">Oil Paint</button>
       </div>
     </div>
 
@@ -275,31 +209,27 @@ input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
       <div class="srow">
         <span class="slbl">Model</span>
         <select id="t-model">
-          <option value="aa77f04e-3eec-4034-9c07-d0a6337c4b5e">Leonardo Diffusion XL</option>
-          <option value="b24e16ff-06e3-43eb-8d33-4416c2d75876">Lightning XL (Cepat)</option>
-          <option value="5c232a9e-9061-4777-980a-ddc8e65647c6">Vision XL</option>
-          <option value="e71a1c2f-4f80-4800-934f-2c68979d1cc6">Absolute Reality</option>
+          <option value="flux">Flux (Terbaik)</option>
+          <option value="flux-realism">Flux Realism</option>
+          <option value="flux-anime">Flux Anime</option>
+          <option value="flux-3d">Flux 3D</option>
+          <option value="turbo">Turbo (Tercepat)</option>
         </select>
       </div>
       <div class="srow">
         <span class="slbl">Ukuran</span>
         <select id="t-size">
-          <option value="1024,1024">1:1 Square</option>
-          <option value="768,1344">9:16 Portrait (TikTok/Reels)</option>
-          <option value="1344,768">16:9 Landscape (YouTube)</option>
-          <option value="832,1216">2:3 Portrait</option>
-          <option value="1216,832">3:2 Landscape</option>
+          <option value="1024x1024">1:1 Square</option>
+          <option value="720x1280">9:16 TikTok/Reels</option>
+          <option value="1280x720">16:9 YouTube</option>
+          <option value="832x1216">2:3 Portrait</option>
+          <option value="1200x628">Facebook/OG</option>
         </select>
       </div>
       <div class="swrap">
-        <div class="sh"><span>Jumlah Gambar</span><span id="num-val">1</span></div>
-        <input type="range" min="1" max="4" value="1" id="t-num" oninput="document.getElementById('num-val').textContent=this.value">
-        <div class="shints"><span>1</span><span>4</span></div>
-      </div>
-      <div class="swrap">
-        <div class="sh"><span>Guidance Scale (kreativitas)</span><span id="cfg-val">7</span></div>
-        <input type="range" min="1" max="20" step="0.5" value="7" id="t-cfg" oninput="document.getElementById('cfg-val').textContent=this.value">
-        <div class="shints"><span>Lebih bebas</span><span>Ikut prompt</span></div>
+        <div class="sh"><span>Variasi (seed berbeda)</span><span id="var-val">1</span></div>
+        <input type="range" min="1" max="4" value="1" id="t-var" oninput="document.getElementById('var-val').textContent=this.value">
+        <div class="shints"><span>1 gambar</span><span>4 gambar</span></div>
       </div>
     </div>
   </div>
@@ -310,16 +240,16 @@ input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
       <div class="clabel">Upload Foto</div>
       <div id="i-upload-area">
         <div class="upload-zone" id="i-dz">
-          <input type="file" accept="image/*" id="i-file" onchange="handleUpload('i')">
+          <input type="file" accept="image/*" id="i-file" onchange="handleUpload()">
           <div class="uz-icon">📸</div>
-          <p>Upload foto yang mau di-transform</p>
+          <p>Tap untuk upload foto</p>
           <small>JPG, PNG, WEBP · Drag & drop</small>
         </div>
       </div>
       <div id="i-preview-area" style="display:none">
         <div class="preview-wrap">
           <img id="i-preview" src="" alt="">
-          <button class="clr-btn" onclick="clearUpload('i')">✕ Ganti</button>
+          <button class="clr-btn" onclick="clearUpload()">✕ Ganti</button>
         </div>
       </div>
     </div>
@@ -327,12 +257,86 @@ input[type=range]{width:100%;accent-color:var(--accent);cursor:pointer}
     <div class="card">
       <div class="clabel">Transform Jadi</div>
       <div class="pills" style="margin-bottom:10px">
-        <button class="pill q" onclick="setP('i-prompt','UGC lifestyle, natural light, candid, authentic, photorealistic')">UGC</button>
-        <button class="pill q" onclick="setP('i-prompt','professional product photography, clean white background, commercial')">Product</button>
-        <button class="pill q" onclick="setP('i-prompt','cinematic editorial fashion, moody lighting, film grain')">Editorial</button>
-        <button class="pill q" onclick="setP('i-prompt','anime illustration, vibrant, studio ghibli')">Anime</button>
-        <button class="pill q" onclick="setP('i-prompt','3D CGI character, octane render, subsurface scattering')">3D</button>
-        <button class="pill q" onclick="setP('i-prompt','cyberpunk style, neo
+        <button class="pill q" onclick="setP('UGC lifestyle, natural light, candid, authentic, photorealistic')">UGC</button>
+        <button class="pill q" onclick="setP('product photography, clean white background, commercial')">Product</button>
+        <button class="pill q" onclick="setP('cinematic editorial fashion, moody lighting, film grain')">Editorial</button>
+        <button class="pill q" onclick="setP('anime illustration, vibrant, studio ghibli style')">Anime</button>
+        <button class="pill q" onclick="setP('3D CGI stylized, octane render, studio lighting')">3D CGI</button>
+        <button class="pill q" onclick="setP('cyberpunk style, neon glow, futuristic, dark')">Cyberpunk</button>
+        <button class="pill q" onclick="setP('oil painting, classical art style, detailed')">Oil Paint</button>
+        <button class="pill q" onclick="setP('watercolor illustration, soft colors, artistic')">Watercolor</button>
+        <button class="pill q" onclick="setP('vintage 35mm film, grain, warm analog tones')">Vintage</button>
+      </div>
+      <textarea id="i-prompt" rows="2" placeholder="Atau ketik sendiri gaya transform nya..."></textarea>
+    </div>
+
+    <div class="card">
+      <div class="clabel">Transform Strength</div>
+      <div class="swrap">
+        <div class="sh"><span>Seberapa beda dari foto asli</span><span id="str-val">0.6</span></div>
+        <input type="range" min="0.1" max="1" step="0.05" value="0.6" id="i-str" oninput="document.getElementById('str-val').textContent=parseFloat(this.value).toFixed(1)">
+        <div class="shints"><span>← Mirip asli</span><span>Beda total →</span></div>
+      </div>
+      <div class="srow" style="margin-top:10px">
+        <span class="slbl">Model</span>
+        <select id="i-model">
+          <option value="flux">Flux (Terbaik)</option>
+          <option value="flux-realism">Flux Realism</option>
+          <option value="turbo">Turbo (Cepat)</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB: PROMPT LIBRARY -->
+  <div class="section" id="sec-lib">
+    <div class="card">
+      <div class="clabel">Prompt Library — Tap untuk pakai</div>
+      <div id="prompt-lib"></div>
+    </div>
+  </div>
+
+  <!-- TAB: TIPS -->
+  <div class="section" id="sec-guide">
+    <div class="card">
+      <div class="guide-title">💡 Tips Prompt Biar Hasilnya Bagus</div>
+      <div class="tip-row"><div class="tip-icon">🇬🇧</div><div class="tip-text">Selalu pakai bahasa Inggris — hasilnya jauh lebih bagus</div></div>
+      <div class="tip-row"><div class="tip-icon">💡</div><div class="tip-text">Tambahkan lighting: natural light, golden hour, studio lighting, rim light</div></div>
+      <div class="tip-row"><div class="tip-icon">📸</div><div class="tip-text">Sebutin kamera: shot on Sony A7, 85mm lens, shallow depth of field</div></div>
+      <div class="tip-row"><div class="tip-icon">⭐</div><div class="tip-text">Tambah kualitas: hyperdetailed, 8K, masterpiece, best quality</div></div>
+      <div class="tip-row"><div class="tip-icon">❌</div><div class="tip-text">Negative prompt penting! Isi: blurry, bad anatomy, watermark, ugly</div></div>
+      <div class="tip-row"><div class="tip-icon">🎨</div><div class="tip-text">Cobain semua model — Flux Realism bagus buat foto, Flux Anime buat kartun</div></div>
+      <div class="tip-row"><div class="tip-icon">🔄</div><div class="tip-text">Kalau kurang suka hasilnya, generate ulang — tiap kali hasilnya beda!</div></div>
+    </div>
+    <div class="card">
+      <div class="guide-title">🚀 Kenapa EndoLabs.ai?</div>
+      <div class="tip-row"><div class="tip-icon">✅</div><div class="tip-text">100% Gratis — tidak perlu bayar, tidak perlu kartu kredit</div></div>
+      <div class="tip-row"><div class="tip-icon">✅</div><div class="tip-text">Tanpa login — langsung bisa generate</div></div>
+      <div class="tip-row"><div class="tip-icon">✅</div><div class="tip-text">Unlimited — generate sebanyak yang lo mau</div></div>
+      <div class="tip-row"><div class="tip-icon">✅</div><div class="tip-text">5 model AI berbeda — pilih sesuai kebutuhan</div></div>
+      <div class="tip-row"><div class="tip-icon">✅</div><div class="tip-text">img2img — transform foto jadi style apapun</div></div>
+    </div>
+  </div>
+
+  <!-- GENERATE BUTTON -->
+  <button class="gen-btn" id="gen-btn" onclick="generate()">⚡ GENERATE SEKARANG</button>
+
+  <!-- OUTPUT -->
+  <div class="output" id="output">
+    <div class="ph">
+      <div class="ph-icon">🎨</div>
+      <p>Hasil generate muncul di sini</p>
+    </div>
+  </div>
+
+  <!-- META -->
+  <div class="meta" id="meta" style="display:none">
+    <span class="meta-info" id="meta-info"></span>
+    <div class="action-btns">
+      <button class="act-btn" onclick="downloadImg()">↓ Download</button>
+      <button class="act-btn" onclick="shareImg()">↗ Share</button>
+      <button class
+      
       
     
 
